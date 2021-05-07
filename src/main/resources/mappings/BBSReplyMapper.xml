@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="brSQL">
+
+	<!-- 댓글 등록 -->
+	<insert id="brInsert" parameterType="brDTO">
+		INSERT INTO breply VALUES(BR_SEQ.NEXTVAL,#{brcontent},sysdate,#{id},#{fnum})
+	</insert>
+
+	<!-- 댓글 리스트 가져오기1 -->
+	<resultMap type="brDTO" id="BRMap">
+		<result property="brnum" column="brnum"/>
+		<result property="brcontent" column="brcontent"/>
+		<result property="brdate" column="brdate" />
+		<result property="id" column="id" /> 
+		<result property="fnum" column="fnum" />
+	</resultMap>
+	 
+	<!-- 댓글 리스트 가져오기2 --> 
+	<select id="brList" resultMap="BRMap" parameterType="String">
+		SELECT * FROM breply WHERE fnum=#{fnum} ORDER BY brnum DESC
+	</select>
+	
+</mapper>

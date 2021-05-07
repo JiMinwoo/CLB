@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+  
+<configuration>
+
+	<typeAliases>
+		<typeAlias type="com.itbank.clb.DTO.MemberDTO" alias="memDTO"></typeAlias>
+		<typeAlias type="com.itbank.clb.DTO.BookDTO" alias="bookDTO"></typeAlias>
+		<typeAlias type="com.itbank.clb.DTO.BBSDTO" alias="bbsDTO"></typeAlias>
+		<typeAlias type="com.itbank.clb.DTO.MarketDTO" alias="marketDTO"></typeAlias>
+		<typeAlias type="com.itbank.clb.DTO.BBSReplyDTO" alias="brDTO"></typeAlias> 
+		<typeAlias type="com.itbank.clb.DTO.BBSLikeDTO" alias="bbsLikeDTO"></typeAlias>
+		<typeAlias type="com.itbank.clb.DTO.SearchDTO" alias="searchDTO"></typeAlias>
+		<typeAlias type="com.itbank.clb.DTO.LibDTO" alias="LibDTO"></typeAlias>
+	</typeAliases>
+
+	<mappers>
+		<mapper resource="mappings/MemberMapper.xml" />
+		<mapper resource="mappings/BookMapper.xml" />
+		<mapper resource="mappings/BBSMapper.xml" />
+		<mapper resource="mappings/MarketMapper.xml" />
+		<mapper resource="mappings/BBSReplyMapper.xml" />
+		<mapper resource="mappings/LibMapper.xml" />
+	</mappers>
+	
+</configuration>

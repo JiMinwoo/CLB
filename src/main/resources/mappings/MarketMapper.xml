@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="marketSQL">
+
+	<!-- 마켓 글 등록 -->
+	<insert id="marketInsert" parameterType="marketDTO">
+		INSERT INTO market VALUES(MK_SEQ.NEXTVAL,#{mtitle},#{mcontent},#{mimg},#{mwriter},sysdate,0,0)
+	</insert>
+	
+	<!-- 마켓 글 삭제 -->
+	<delete id="marketDelete" parameterType="String">
+		DELETE FROM market WHERE mnum=#{mnum}
+	</delete>
+	
+	<!-- 마켓 글 수정 -->
+	<update id="marketUpdate" parameterType="marketDTO">
+		UPDATE market SET mtitle=#{mtitle},mcontent=#{mcontent} WHERE mnum=#{mnum}
+	</update>
+
+	<!-- 장터 리스트 가져오기 -->
+	<resultMap type="marketDTO" id="MarketMap"> 
+		<result property="mnum" column="mnum"/>
+		<result property="mtitle" column="mtitle" />
+		<result property="mcontent" column="mcontent"/>
+		<result property="mimg" column="mimg"/>
+		<result property="mwriter" column="mwriter" />
+		<result property="mdate" column="mdate" />
+		<result property="mhit" column="mhit" />
+		<result property="mcheck" column="mcheck" />
+	</resultMap>
+
+	<!-- 장터 리스트 가져오기2 -->
+	<select id="marketList" parameterType="Integer" resultMap="MarketMap">
+		<![CDATA[
+			SELECT * FROM(
+	    		SELECT rownum as rnum,market.* FROM (
+	    			SELECT * FROM market ORDER BY mnum DESC)
+	    		market)
+			market WHERE rnum >= (#{pagenum}*8)-7 AND rnum <= #{pagenum}*8
+		]]> 
+	</select>
+	
+	<!-- 장터 글 수 구하기 -->
+	<select id="marketCount" resultType="Integer">
+		SELECT COUNT(*) FROM market
+	</select>
+
+	<!-- 장터 글 자세히 보기 -->
+	<select id="marketView" parameterType="String" resultType="marketDTO">
+		SELECT * FROM market WHERE mnum=#{mnum}
+	</select>
+	
+	<!-- 장터 조회수 가져오기 -->
+	<select id="marketHit" parameterType="String" resultType="Integer">
+		SELECT mhit FROM market WHERE mnum=#{mnum}
+	</select>
+ 	
+ 	<!-- 장터 조회수 올리기 -->
+ 	<update id="marketHitUp" parameterType="bbsDTO">
+		UPDATE market SET mhit = #{mhit}+1 WHERE mnum=#{mnum}	
+ 	</update>
+
+</mapper>

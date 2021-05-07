@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="bbsSQL">
+
+	<!-- 글 등록 -->
+	<insert id="bbsInsert" parameterType="bbsDTO">
+		<![CDATA[
+			INSERT INTO bbs VALUES(BBS_SEQ.NEXTVAL,#{ftitle},#{fcontent},1,#{fwriter},sysdate,0,0)
+		]]>
+	</insert>
+	
+	<!-- 글 삭제 -->
+	<delete id="bbsDelete" parameterType="String">
+		DELETE FROM bbs WHERE fnum=#{fnum}
+	</delete>
+	
+	<!-- 글 수정 -->
+	<update id="bbsUpdate" parameterType="bbsDTO">
+		UPDATE bbs SET ftitle=#{ftitle},fcontent=#{fcontent} WHERE fnum=#{fnum}
+	</update>
+	
+	<!-- 글 자세히 보기 -->
+	<select id="bbsView" parameterType="String" resultType="bbsDTO">
+		SELECT * FROM bbs WHERE fnum=#{fnum}
+	</select>
+	
+	<!-- 조회수 가져오기 -->
+	<select id="bbsHit" parameterType="String" resultType="Integer">
+		SELECT fhit FROM bbs WHERE fnum=#{fnum}
+	</select>
+ 	
+ 	<!-- 조회수 올리기 -->
+ 	<update id="bbsHitUp" parameterType="bbsDTO">
+		UPDATE bbs SET fhit = #{fhit}+1 WHERE fnum=#{fnum}	
+ 	</update>
+
+	<!-- 좋아요 올리기 -->
+ 	<insert id="bbsLikeUp" parameterType="BBSLikeDTO">
+ 		INSERT INTO bbslike VALUES(#{id},#{fnum})
+ 	</insert>
+ 	
+ 	<!-- 좋아요 가져오기 -->
+ 	<select id="bbsLike" parameterType="String" resultType="Integer">
+ 		SELECT COUNT(*) FROM bbslike WHERE fnum=#{fnum}
+ 	</select>
+ 	
+ 	<!-- 좋아요 여부 체크 -->
+ 	<select id="bbsLikeCheck" parameterType="bbsLikeDTO" resultType="Integer">
+ 		SELECT COUNT(*) FROM bbslike WHERE fnum=#{fnum} AND id=#{id}
+ 	</select>
+ 	
+ 	<!-- 게시판 리스트 가져오기 -->
+	<resultMap type="bbsDTO" id="BBSMap"> 
+		<result property="fnum" column="fnum"/>
+		<result property="ftitle" column="ftitle" />
+		<result property="fcontent" column="fcontent"/>
+		<result property="fimg" column="fimg"/>
+		<result property="fwriter" column="fwriter" />
+		<result property="fdate" column="fdate" />
+		<result property="fhit" column="fhit" />
+	</resultMap>
+	
+	<!-- 게시판 리스트 가져오기2 -->
+	<select id="bbsList" parameterType="Integer" resultMap="BBSMap">
+		<![CDATA[
+			SELECT * FROM(
+	    		SELECT rownum as rnum,bbs.* FROM (
+	    			SELECT * FROM bbs ORDER BY fnum DESC)
+	    		bbs)
+			bbs WHERE rnum >= (#{pagenum}*10)-9 AND rnum <= #{pagenum}*10
+		]]> 
+	</select>
+	
+	<!-- 게시판 전체 리스트 가져오기 -->
+	<select id="AllbbsList" resultMap="BBSMap">
+		SELECT * FROM bbs
+	</select>
+	
+	<!-- 게시판 좋아요 수 등록 -->
+	<update id="bbsLikeInsert" parameterType="bbsDTO">
+		UPDATE bbs SET flike = #{flike} WHERE fnum=#{fnum}
+	</update>
+	
+	<!-- 게시판 수 구하기 -->
+	<select id="bbsCount" resultType="Integer">
+		SELECT COUNT(*) FROM bbs
+	</select>
+	
+	<select id="AllbbsSearchList" parameterType="String" resultMap="BBSMap">
+		SELECT * FROM bbs WHERE ftitle LIKE '%'||#{sc}||'%'
+	</select>
+	
+	<select id="bbsSearchList" parameterType="searchDTO" resultMap="BBSMap">
+		<![CDATA[
+			SELECT * FROM(
+	    		SELECT rownum as rnum,bbs.* FROM (
+	    			SELECT * FROM bbs ORDER BY fnum DESC)
+	    		bbs WHERE ftitle LIKE '%'||#{sc}||'%')
+			bbs WHERE rnum >= (#{pagenum}*10)-9 AND rnum <= #{pagenum}*10
+		]]> 
+	</select>
+	
+	<select id="bbsSearchCount" parameterType="String" resultType="Integer">
+		SELECT COUNT(*) FROM bbs WHERE ftitle LIKE '%'||#{sc}||'%'
+	</select>
+
+</mapper>
